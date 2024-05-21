@@ -21,7 +21,7 @@ int main(int argc, char** argv){
 
     char* server_name = argv[1];
     int port_num = atoi(argv[2]);
-    char command[COMMANDSIZE];
+    char command[BUFFER_SIZE];
     int offset=0;
     for (int i = 3; i < argc; i++) 
         offset += sprintf(command + offset, "%s ", argv[i]);
@@ -31,19 +31,15 @@ int main(int argc, char** argv){
 
 
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sockfd < 0){ 
-        printf("Socket error\n");
-        return 1;
-    }
+    if (sockfd < 0)
+        error("Socket error\n");
 
 
     
 
     server = gethostbyname(server_name);
-    if (server == NULL) {
-        printf("No such host\n");
-        return 1;
-    }
+    if (server == NULL) 
+        error("No such host\n");
 
 
 
@@ -53,17 +49,13 @@ int main(int argc, char** argv){
     serv_addr.sin_port = htons(port_num);
 
 
-    if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0) {
-        printf("ERROR connecting");
-        return 1;
-    }
+    if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0) 
+        error("ERROR connecting");
 
 
     n = write(sockfd, command, strlen(command));
-    if (n < 0){
-        printf("ERROR writing to socket");
-        return 1;
-    }
+    if (n < 0)
+        error("ERROR writing to socket");
 
     return 0;
 }
