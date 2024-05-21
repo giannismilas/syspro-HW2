@@ -15,9 +15,9 @@ struct Q{
 
 
 
-nodeptr createNode(int, char*, int);
+nodeptr createNode(int, char*);
 queueptr initQueue();
 int isEmpty(queueptr);
-nodeptr enqueue(queueptr, int, char*,int);
+nodeptr enqueue(queueptr, int, char*);
 nodeptr dequeue(queueptr);
 void freeQueue(queueptr);
