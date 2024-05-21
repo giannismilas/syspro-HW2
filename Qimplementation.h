@@ -4,7 +4,6 @@ typedef struct Q* queueptr;
 struct node{
     int jobid;      //unique increasing jobid for each job
     char* job;     //job arguments in a array of strings
-    int count;      //number of lines in the array
     nodeptr next;   //pointer to next node
 };
 
