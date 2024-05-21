@@ -3,7 +3,7 @@
 #include "Qimplementation.h"
 
 
-nodeptr createNode(int jobid, char* job) {    //simple newnode function that allocates space for a new queue node to add job info and returns pointer 
+nodeptr createNode(int jobid, char* job,int clientSocket) {    //simple newnode function that allocates space for a new queue node to add job info and returns pointer 
     nodeptr newNode = (nodeptr)malloc(sizeof(struct node));
     if (newNode == NULL) {
         printf("Memory allocation failed\n");
@@ -12,6 +12,7 @@ nodeptr createNode(int jobid, char* job) {    //simple newnode function that all
     newNode->jobid = jobid;
     newNode->job = job;
     newNode->next = NULL;
+    newNode->clientSocket=clientSocket;
     return newNode;
 }
 
@@ -34,15 +35,15 @@ int isEmpty(queueptr q) {                                                       
 }
 
 
-nodeptr enqueue(queueptr q, int jobid, char* job) {          //insert a node to the rear of the queue
+nodeptr enqueue(queueptr q, int jobid, char* job, int clientSocket) {          //insert a node to the rear of the queue
     nodeptr newNode;
     if (isEmpty(q)) {                                                           //first node so front and rear pointer show to the new node
-        newNode = createNode(jobid, job);
+        newNode = createNode(jobid, job,clientSocket);
         q->front = newNode;
         q->rear = newNode;
     } 
     else {                                                                      //insert to the rear with increased position
-        newNode = createNode(jobid, job);
+        newNode = createNode(jobid, job,clientSocket);
         q->rear->next = newNode;
         q->rear = newNode;
     }

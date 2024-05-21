@@ -4,6 +4,7 @@ typedef struct Q* queueptr;
 struct node{
     int jobid;      //unique increasing jobid for each job
     char* job;     //job arguments in a array of strings
+    int clientSocket;
     nodeptr next;   //pointer to next node
 };
 
@@ -15,9 +16,9 @@ struct Q{
 
 
 
-nodeptr createNode(int, char*);
+nodeptr createNode(int, char*,int);
 queueptr initQueue();
 int isEmpty(queueptr);
-nodeptr enqueue(queueptr, int, char*);
+nodeptr enqueue(queueptr, int, char*,int);
 nodeptr dequeue(queueptr);
 void freeQueue(queueptr);
