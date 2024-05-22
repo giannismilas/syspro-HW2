@@ -22,12 +22,12 @@ void *controller_thread(void *arg) {
     int clientSocket = *(int *)arg;
 
     // Read command from client
-    char buffer[BUFFER_SIZE];
-    memset(buffer, 0, BUFFER_SIZE);
-    int n = read(clientSocket, buffer, BUFFER_SIZE);
+    char command[BUFFER_SIZE];
+    memset(command, 0, BUFFER_SIZE);
+    int n = read(clientSocket, command, BUFFER_SIZE);
     if (n < 0) 
         error("ERROR reading from socket");
-    printf("%s\n",buffer);
+    printf("%s\n",command);
     // Process command and handle job
 
 
@@ -49,6 +49,6 @@ void *controller_thread(void *arg) {
 }
 
 void *worker_thread(void *arg) {
-    // Worker thread logic goes here
+    
     pthread_exit(NULL);
 }
