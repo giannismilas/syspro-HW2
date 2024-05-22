@@ -21,6 +21,19 @@ void *controller_thread(void *arg) {
     printf("%s\n",buffer);
     // Process command and handle job
 
+
+
+
+
+
+
+    char response[BUFFER_SIZE];
+    sprintf(response, "Command processed");
+
+    n = write(clientSocket, response, strlen(response));
+    if (n < 0)
+        error("ERROR writing to socket");
+
     // Close client socket
     close(clientSocket);
     pthread_exit(NULL);
