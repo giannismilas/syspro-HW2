@@ -90,27 +90,49 @@ void freeQueue(queueptr q) {                                                    
 }
 
 
-nodeptr deleteJobID(queueptr q, int jobID) {                                    //search and delete a job with a specific jobID
-    if (isEmpty(q))
+nodeptr deleteJobID(queueptr q, int jobID) {
+    // Acquire the mutex lock to ensure thread safety
+    pthread_mutex_lock(&q->mtx);
+    
+    if (isEmpty(q)) {
+        // Release the mutex lock before returning
+        pthread_mutex_unlock(&q->mtx);
         return NULL;
+    }
+    
     nodeptr current = q->front;
     nodeptr prev = NULL;
-    while (current != NULL && current->jobid != jobID) {                        //traverse the queue to find the node
+    
+    while (current != NULL && current->jobid != jobID) {
         prev = current;
         current = current->next;
     }
-    if (current == NULL)                                                        //not found
+    
+    if (current == NULL) {
+        // Release the mutex lock before returning
+        pthread_mutex_unlock(&q->mtx);
         return NULL;
-    if (prev == NULL)                                                           //found in front position so can use deque function
+    }
+    
+    if (prev == NULL) {
+        // Release the mutex lock before calling dequeue
+        pthread_mutex_unlock(&q->mtx);
         return dequeue(q);
-    else {                                                                      //found somewhere else so remove node and update all the Qpositions of the node on the right
+    } else {
         prev->next = current->next;
     }
-    if (current == q->rear)                                                     //if found in the rear position no need to update Qpositions   
+    
+    if (current == q->rear)
         q->rear = prev;
+    
     q->size--;
+    
+    // Release the mutex lock before returning
+    pthread_mutex_unlock(&q->mtx);
+    
     return current;
 }
+
 
 
 void write_queue_to_buffer(queueptr q, char* buffer) {

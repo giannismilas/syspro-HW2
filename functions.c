@@ -31,22 +31,28 @@ void *controller_thread(void *arg) {
     
     // Process command and handle job
     char command[BUFFER_SIZE];
-    char job[BUFFER_SIZE];
+    char args[BUFFER_SIZE];
 
     // Extract the command and the rest of the input
-    sscanf(jobCommanderInputCommand, "%s %[^\n]", command, job);
-
+    sscanf(jobCommanderInputCommand, "%s %[^\n]", command, args);
+    nodeptr temp;
     char response[BUFFER_SIZE];
-    //sprintf(response, "Command processed");
     if(!strcmp(command,"issueJob")){
-        nodeptr temp=enqueue(myqueue,job,clientSocket);
+        temp=enqueue(myqueue,args,clientSocket);
         sprintf(response,"JOB <job_%d,%s> SUBMITTED",temp->jobid,temp->job);
     }
     else if(!strcmp(command,"setConcurrency")){
 
     }
     else if(!strcmp(command,"stop")){
-        
+        int id;
+        sscanf(args, "job_%d", &id);
+        if((temp=deleteJobID(myqueue,id))==NULL){
+            sprintf(response,"JOB <job_%d> NOTFOUND",id);
+        }
+        else{
+            sprintf(response,"JOB <job_%d> REMOVED",id);
+        }
     }
     else if(!strcmp(command,"poll")){
         write_queue_to_buffer(myqueue, response);
