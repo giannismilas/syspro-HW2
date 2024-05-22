@@ -23,9 +23,9 @@ int main(int argc, char** argv){
     int port_num = atoi(argv[2]);
     char command[BUFFER_SIZE];
     int offset = 0;
-
-    for (int i = 3; i < argc; i++) 
-        offset += sprintf(command + offset, "%s ", argv[i]);
+    offset += sprintf(command + offset, "%s", argv[3]);
+    for (int i = 4; i < argc; i++) 
+        offset += sprintf(command + offset, " %s", argv[i]);
 
     printf("Command to send: %s\n", command);
 

@@ -28,12 +28,16 @@ void *controller_thread(void *arg) {
     if (n < 0) 
         error("ERROR reading from socket");
     printf("%s\n",jobCommanderInputCommand);
+    
     // Process command and handle job
-
     char command[BUFFER_SIZE];
-    sscanf(command, "%s", jobCommanderInputCommand);
+    sscanf(jobCommanderInputCommand, "%s ", command);
+
+    char response[BUFFER_SIZE];
+    //sprintf(response, "Command processed");
     if(!strcmp(command,"issueJob")){
-        enqueue(myqueue,jobCommanderInputCommand,clientSocket);
+        nodeptr temp=enqueue(myqueue,jobCommanderInputCommand,clientSocket);
+        sprintf(response,"JOB <job_%d,%s> SUBMITTED",temp->jobid,temp->job);
     }
     else if(!strcmp(command,"setConcurrency")){
 
@@ -52,8 +56,7 @@ void *controller_thread(void *arg) {
 
 
 
-    char response[BUFFER_SIZE];
-    sprintf(response, "Command processed");
+
 
     n = write(clientSocket, response, strlen(response));
     if (n < 0)
