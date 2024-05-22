@@ -45,6 +45,10 @@ int isEmpty(queueptr q) {                                                       
 
 
 nodeptr enqueue(queueptr q, int jobid, char* job, int clientSocket) {          //insert a node to the rear of the queue
+    pthread_mutex_lock(&q->mtx);
+    while (q->size == q->max_items)
+        pthread_cond_wait(&q->room_available, &q->mtx);
+    
     nodeptr newNode;
     if (isEmpty(q)) {                                                           //first node so front and rear pointer show to the new node
         newNode = createNode(jobid, job,clientSocket);
@@ -57,18 +61,21 @@ nodeptr enqueue(queueptr q, int jobid, char* job, int clientSocket) {          /
         q->rear = newNode;
     }
     q->size++;                                                                  //increase the size of the queue
+    pthread_cond_signal(&q->job_available);
+    pthread_mutex_unlock(&q->mtx);
     return newNode;
 }
 
 
 nodeptr dequeue(queueptr q) {                                                   //remove a job from the front of the queue and modify all qpositions of the rest of the nodes
-    if (isEmpty(q)) {
-        printf("Queue is empty, cannot dequeue\n");
-        return NULL;
-    }
+    pthread_mutex_lock(&q->mtx);
+    while (q->size == 0)
+        pthread_cond_wait(&q->job_available, &q->mtx);
     nodeptr temp = q->front;
     q->front = q->front->next;
     q->size--;
+    pthread_cond_signal(&q->room_available);
+    pthread_mutex_unlock(&q->mtx);
     return temp;
 }
 
