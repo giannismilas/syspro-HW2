@@ -10,7 +10,6 @@
 
 
 
-
 void error(const char *msg) {
     perror(msg);
     exit(EXIT_FAILURE);
@@ -22,15 +21,31 @@ void *controller_thread(void *arg) {
     int clientSocket = *(int *)arg;
 
     // Read command from client
-    char command[BUFFER_SIZE];
-    memset(command, 0, BUFFER_SIZE);
-    int n = read(clientSocket, command, BUFFER_SIZE);
+    char jobCommanderInputCommand[BUFFER_SIZE];
+    memset(jobCommanderInputCommand, 0, BUFFER_SIZE);
+    int n = read(clientSocket, jobCommanderInputCommand, BUFFER_SIZE);
     if (n < 0) 
         error("ERROR reading from socket");
-    printf("%s\n",command);
+    printf("%s\n",jobCommanderInputCommand);
     // Process command and handle job
 
+    char command[BUFFER_SIZE];
+    sscanf(command, "%s", jobCommanderInputCommand);
+    if(!strcmp(command,"issueJob")){
 
+    }
+    else if(!strcmp(command,"setConcurrency")){
+
+    }
+    else if(!strcmp(command,"stop")){
+        
+    }
+    else if(!strcmp(command,"poll")){
+        
+    }
+    else if(!strcmp(command,"exit")){
+        
+    }
 
 
 
