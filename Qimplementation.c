@@ -111,3 +111,32 @@ nodeptr deleteJobID(queueptr q, int jobID) {                                    
     q->size--;
     return current;
 }
+
+
+void queue_to_buffer(queueptr q, char* buffer) {
+    // Acquire the mutex lock to ensure thread safety
+    pthread_mutex_lock(&q->mtx);
+    
+    // Pointer to traverse the queue
+    nodeptr current = q->front;
+    
+    // Initialize buffer to an empty string
+    buffer[0] = '\0';
+    
+    // Traverse the queue and append each job to the buffer
+    while (current != NULL) {
+        char temp[256];
+        snprintf(temp, sizeof(temp), "<%d, %s>\n", current->jobid, current->job);
+        // Ensure not to overflow the buffer
+        if (strlen(buffer) + strlen(temp) + 1 < BUFFER_SIZE) {
+            strcat(buffer, temp);
+        } else {
+            // Handle buffer overflow (optional: you can log an error or break loop)
+            break;
+        }
+        current = current->next;
+    }
+    
+    // Release the mutex lock
+    pthread_mutex_unlock(&q->mtx);
+}
