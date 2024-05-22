@@ -5,7 +5,7 @@ CC = gcc
 CFLAGS = -Wall -Wextra -std=c11 -I. -pthread -lrt
 
 # Source files
-SRCS_JOB_COMMANDER = jobCommander.c  functions.c
+SRCS_JOB_COMMANDER = jobCommander.c Qimplementation.c functions.c
 SRCS_JOB_EXECUTOR = jobExecutorServer.c Qimplementation.c functions.c
 # Add any other source files here if needed
 

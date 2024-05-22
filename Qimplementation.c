@@ -35,6 +35,7 @@ queueptr initQueue(int max_items) {                                             
     newQueue->size = 0;
     newQueue->max_items=max_items;
     newQueue->concurrency=1;
+    newQueue->cur_jobid=0;
     return newQueue;
 }
 
@@ -44,23 +45,24 @@ int isEmpty(queueptr q) {                                                       
 }
 
 
-nodeptr enqueue(queueptr q, int jobid, char* job, int clientSocket) {          //insert a node to the rear of the queue
+nodeptr enqueue(queueptr q,  char* job, int clientSocket) {          //insert a node to the rear of the queue
     pthread_mutex_lock(&q->mtx);
     while (q->size == q->max_items)
         pthread_cond_wait(&q->room_available, &q->mtx);
     
     nodeptr newNode;
     if (isEmpty(q)) {                                                           //first node so front and rear pointer show to the new node
-        newNode = createNode(jobid, job,clientSocket);
+        newNode = createNode(q->cur_jobid, job,clientSocket);
         q->front = newNode;
         q->rear = newNode;
     } 
     else {                                                                      //insert to the rear with increased position
-        newNode = createNode(jobid, job,clientSocket);
+        newNode = createNode(q->cur_jobid, job,clientSocket);
         q->rear->next = newNode;
         q->rear = newNode;
     }
     q->size++;                                                                  //increase the size of the queue
+    q->cur_jobid++;
     pthread_cond_signal(&q->job_available);
     pthread_mutex_unlock(&q->mtx);
     return newNode;

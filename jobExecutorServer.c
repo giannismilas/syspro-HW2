@@ -7,9 +7,9 @@
 #include <netinet/in.h>
 #include <pthread.h>
 #include "functions.h"
+#include "Qimplementation.h"
 
-
-
+extern queueptr myqueue;
 
 int main(int argc, char *argv[]){
     if (argc != 4) {
@@ -18,6 +18,7 @@ int main(int argc, char *argv[]){
     int port_num = atoi(argv[1]);
     int bufferSize = atoi(argv[2]);
     int threadPoolSize = atoi(argv[3]);
+    myqueue=initQueue(bufferSize);
 
     int sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd < 0) 

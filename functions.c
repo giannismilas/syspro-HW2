@@ -1,4 +1,5 @@
 #include "functions.h"
+#include "Qimplementation.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,7 +9,7 @@
 #include <netinet/in.h>
 #include <pthread.h>
 
-
+extern queueptr myqueue;
 
 void error(const char *msg) {
     perror(msg);
@@ -32,7 +33,7 @@ void *controller_thread(void *arg) {
     char command[BUFFER_SIZE];
     sscanf(command, "%s", jobCommanderInputCommand);
     if(!strcmp(command,"issueJob")){
-
+        enqueue(myqueue,jobCommanderInputCommand,clientSocket);
     }
     else if(!strcmp(command,"setConcurrency")){
 
