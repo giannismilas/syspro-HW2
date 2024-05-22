@@ -22,3 +22,4 @@ int isEmpty(queueptr);
 nodeptr enqueue(queueptr, int, char*,int);
 nodeptr dequeue(queueptr);
 void freeQueue(queueptr);
+nodeptr deleteJobID(queueptr, int);

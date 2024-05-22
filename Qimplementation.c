@@ -70,3 +70,26 @@ void freeQueue(queueptr q) {                                                    
         dequeue(q);
     free(q);
 }
+
+
+nodeptr deleteJobID(queueptr q, int jobID) {                                    //search and delete a job with a specific jobID
+    if (isEmpty(q))
+        return NULL;
+    nodeptr current = q->front;
+    nodeptr prev = NULL;
+    while (current != NULL && current->jobid != jobID) {                        //traverse the queue to find the node
+        prev = current;
+        current = current->next;
+    }
+    if (current == NULL)                                                        //not found
+        return NULL;
+    if (prev == NULL)                                                           //found in front position so can use deque function
+        return dequeue(q);
+    else {                                                                      //found somewhere else so remove node and update all the Qpositions of the node on the right
+        prev->next = current->next;
+    }
+    if (current == q->rear)                                                     //if found in the rear position no need to update Qpositions   
+        q->rear = prev;
+    q->size--;
+    return current;
+}
