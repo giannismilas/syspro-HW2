@@ -27,8 +27,6 @@ int main(int argc, char** argv){
     for (int i = 4; i < argc; i++) 
         offset += sprintf(command + offset, " %s", argv[i]);
 
-    printf("Command to send: %s\n", command);
-
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd < 0)
         error("Socket error\n");
@@ -56,7 +54,7 @@ int main(int argc, char** argv){
     if (n < 0)
         error("ERROR reading from socket");
 
-    printf("Server response: %s\n", response);
+    printf("%s\n", response);
 
     close(sockfd);
     return 0;

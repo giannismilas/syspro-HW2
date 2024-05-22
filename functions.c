@@ -49,7 +49,7 @@ void *controller_thread(void *arg) {
         
     }
     else if(!strcmp(command,"poll")){
-        
+        write_queue_to_buffer(myqueue, response);
     }
     else if(!strcmp(command,"exit")){
         

@@ -113,7 +113,7 @@ nodeptr deleteJobID(queueptr q, int jobID) {                                    
 }
 
 
-void queue_to_buffer(queueptr q, char* buffer) {
+void write_queue_to_buffer(queueptr q, char* buffer) {
     // Acquire the mutex lock to ensure thread safety
     pthread_mutex_lock(&q->mtx);
     
