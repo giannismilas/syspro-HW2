@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include "functions.h"
 #include "Qimplementation.h"
 
 
@@ -10,7 +12,8 @@ nodeptr createNode(int jobid, char* job,int clientSocket) {    //simple newnode 
         exit(1);
     }
     newNode->jobid = jobid;
-    newNode->job = job;
+    newNode->job = malloc(BUFFER_SIZE * sizeof(char));
+    strcpy(newNode->job,job);
     newNode->next = NULL;
     newNode->clientSocket=clientSocket;
     return newNode;
