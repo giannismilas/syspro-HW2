@@ -4,6 +4,7 @@
         "types.h": "c",
         "socket.h": "c",
         "stdlib.h": "c",
-        "in.h": "c"
+        "in.h": "c",
+        "pthread.h": "c"
     }
 }

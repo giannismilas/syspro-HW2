@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <pthread.h>
 #include "functions.h"
 #include "Qimplementation.h"
 
@@ -20,15 +21,20 @@ nodeptr createNode(int jobid, char* job,int clientSocket) {    //simple newnode 
 }
 
 
-queueptr initQueue() {                                                          //allocates space for the structure that holds info for the queue and initializes pointers to NULL and size to 0
+queueptr initQueue(int max_items) {                                                          //allocates space for the structure that holds info for the queue and initializes pointers to NULL and size to 0
     queueptr newQueue = (queueptr)malloc(sizeof(struct Q));
     if (newQueue == NULL) {
         printf("Memory allocation failed\n");
         exit(1);
     }
+    pthread_mutex_init(&newQueue->mtx, NULL);
+    pthread_cond_init(&newQueue->job_available, NULL);
+    pthread_cond_init(&newQueue->room_available, NULL);
     newQueue->front = NULL;
     newQueue->rear = NULL;
     newQueue->size = 0;
+    newQueue->max_items=max_items;
+    newQueue->concurrency=1;
     return newQueue;
 }
 

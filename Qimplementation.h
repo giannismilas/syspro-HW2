@@ -1,4 +1,7 @@
 #pragma once
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
 typedef struct node* nodeptr;
 typedef struct Q* queueptr;
 struct node{
@@ -11,13 +14,19 @@ struct node{
 struct Q{
     nodeptr front;  //first job of the queue
     nodeptr rear;   //last job of queue
-    int size;       //number of jobs in queue
+    pthread_mutex_t mtx;
+    pthread_cond_t job_available; 
+    pthread_cond_t room_available; 
+    int max_items;
+    int concurrency;
+    int cur_jobid;
+    int size;       
 };
 
 
 
 nodeptr createNode(int, char*,int);
-queueptr initQueue();
+queueptr initQueue(int);
 int isEmpty(queueptr);
 nodeptr enqueue(queueptr, int, char*,int);
 nodeptr dequeue(queueptr);
