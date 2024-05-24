@@ -1,5 +1,5 @@
 #pragma once
-#define BUFFER_SIZE 2048
+#define BUFFER_SIZE 10000
 #include "Qimplementation.h"
 
 queueptr myqueue;

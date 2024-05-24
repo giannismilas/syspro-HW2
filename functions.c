@@ -61,13 +61,6 @@ void *controller_thread(void *arg) {
     else if(!strcmp(command,"exit")){
         
     }
-
-
-
-
-
-
-    printf("%d\n\n\n",clientSocket);
     n = write(clientSocket, response, strlen(response));
     if (n < 0)
         error("ERROR writing to socket");
@@ -136,7 +129,6 @@ void *worker_thread(void *arg) {
             response[total_read] = '\0';
 
             remove(filename);
-            printf("%s\n\n\n",response);
             int n = write(clientSocket, response, strlen(response));
             if (n < 0)
                 perror("ERROR writing to socket");
