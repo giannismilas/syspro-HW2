@@ -74,7 +74,6 @@ void *controller_thread(void *arg) {
 
 
 
-
 void *worker_thread(void *arg) {
     while(1) {
         nodeptr temp = dequeue(myqueue);
@@ -111,7 +110,6 @@ void *worker_thread(void *arg) {
 
 
 
-
 FILE* create_file(){
     char filename[20];
     sprintf(filename, "%d.output", getpid());
@@ -120,6 +118,7 @@ FILE* create_file(){
         error("Error opening output file");
     return output_file;
 }
+
 
 
 void send_output(int pid, int jobid, int clientSocket) {
