@@ -72,8 +72,9 @@ void *controller_thread(void *arg) {
     if (n < 0)
         error("ERROR writing to socket");
 
-    // // Close client socket
-    // close(clientSocket);
+    // Close client socket
+    if(strcmp(command,"issueJob"))
+        close(clientSocket);
     pthread_exit(NULL);
 }
 
@@ -139,6 +140,7 @@ void *worker_thread(void *arg) {
             int n = write(clientSocket, response, strlen(response));
             if (n < 0)
                 perror("ERROR writing to socket");
+            close(clientSocket);
         }
     }
     pthread_exit(NULL);
