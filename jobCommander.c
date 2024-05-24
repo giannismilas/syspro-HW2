@@ -53,8 +53,16 @@ int main(int argc, char** argv){
     n = read(sockfd, response, BUFFER_SIZE);
     if (n < 0)
         error("ERROR reading from socket");
-
     printf("%s\n", response);
+
+    if(!strcmp(argv[3],"issueJob")){
+        memset(response, 0, BUFFER_SIZE);
+        n = read(sockfd, response, BUFFER_SIZE);
+        if (n < 0)
+            error("ERROR reading from socket");
+        printf("%s\n", response);
+    }
+
 
     close(sockfd);
     return 0;
