@@ -20,7 +20,8 @@ struct Q{
     int max_items;
     int concurrency;
     int cur_jobid;
-    int size;       
+    int size;
+    int currently_running;       
 };
 
 

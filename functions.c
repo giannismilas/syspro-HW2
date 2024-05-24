@@ -101,6 +101,9 @@ void *worker_thread(void *arg) {
         else {
             waitpid(pid, &status, 0);
             send_output(pid, temp->jobid, clientSocket);
+            pthread_mutex_lock(&myqueue->mtx);
+            myqueue->currently_running--; 
+            pthread_mutex_unlock(&myqueue->mtx);
         }
     }
     pthread_exit(NULL);
@@ -128,9 +131,11 @@ void send_output(int pid, int jobid, int clientSocket) {
         error("Error opening output file");
 
     char response[BUFFER_SIZE];
+    memset(response, 0, BUFFER_SIZE);
     size_t total_read = 0;
     size_t read_bytes;
     char start_message[BUFFER_SIZE];
+    memset(start_message, 0, BUFFER_SIZE);
     sprintf(start_message, "-----job_%d output start-----\n", jobid);
 
     strcpy(response, start_message);
@@ -142,6 +147,7 @@ void send_output(int pid, int jobid, int clientSocket) {
     }
     fclose(file);
     char end_message[BUFFER_SIZE];
+    memset(end_message, 0, BUFFER_SIZE);
     sprintf(end_message, "\n-----job_%d output end-----", jobid);
     strcat(response, end_message);
     response[BUFFER_SIZE - 1] = '\0';

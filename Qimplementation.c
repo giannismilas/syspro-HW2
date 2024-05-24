@@ -36,6 +36,7 @@ queueptr initQueue(int max_items) {                                             
     newQueue->max_items=max_items;
     newQueue->concurrency=1;
     newQueue->cur_jobid=0;
+    newQueue->currently_running=0;
     return newQueue;
 }
 
@@ -73,9 +74,12 @@ nodeptr dequeue(queueptr q) {                                                   
     pthread_mutex_lock(&q->mtx);
     while (q->size == 0)
         pthread_cond_wait(&q->job_available, &q->mtx);
+    while (q->currently_running >= q->concurrency)
+        pthread_cond_wait(&q->job_available, &q->mtx);
     nodeptr temp = q->front;
     q->front = q->front->next;
     q->size--;
+    q->currently_running++;
     pthread_cond_signal(&q->room_available);
     pthread_mutex_unlock(&q->mtx);
     return temp;
