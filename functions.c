@@ -20,8 +20,6 @@ void error(const char *msg) {
     exit(EXIT_FAILURE);
 }
 
-
-
 void *controller_thread(void *arg) {
     int clientSocket = *(int *)arg;
 
@@ -136,10 +134,10 @@ void send_output(int pid, int jobid, int clientSocket) {
     char response[BUFFER_SIZE];
     size_t total_read = 0;
     size_t read_bytes;
-    char start_delimiter[BUFFER_SIZE];
-    sprintf(start_delimiter, "-----job_%d output start-----\n", jobid);
+    char start_message[BUFFER_SIZE];
+    sprintf(start_message, "-----job_%d output start-----\n", jobid);
 
-    strcpy(response, start_delimiter);
+    strcpy(response, start_message);
     while ((read_bytes = fread(response + strlen(response), 1, BUFFER_SIZE - total_read - strlen(response), file)) > 0) {
         total_read += read_bytes;
         if (total_read >= BUFFER_SIZE - strlen(response) - 1) {
@@ -147,17 +145,13 @@ void send_output(int pid, int jobid, int clientSocket) {
         }
     }
     fclose(file);
-
-    char end_delimiter[BUFFER_SIZE];
-    sprintf(end_delimiter, "\n-----job_%d output end-----", jobid);
-    strcat(response, end_delimiter);
+    char end_message[BUFFER_SIZE];
+    sprintf(end_message, "\n-----job_%d output end-----", jobid);
+    strcat(response, end_message);
     response[BUFFER_SIZE - 1] = '\0';
-
     remove(filename);
-
     int n = write(clientSocket, response, strlen(response));
     if (n < 0)
         error("ERROR writing to socket");
-
     close(clientSocket);
 }
