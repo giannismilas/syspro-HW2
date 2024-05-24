@@ -82,10 +82,8 @@ void *worker_thread(void *arg) {
         pid_t pid;
         int status;
         pid = fork();
-        if (pid < 0) {
-            perror("Fork failed");
-            pthread_exit(NULL);
-        } 
+        if (pid < 0) 
+            error("Fork failed");
         else if (pid == 0) {
             FILE *output_file=create_file();
             dup2(fileno(output_file), STDOUT_FILENO);
@@ -115,10 +113,8 @@ FILE* create_file(){
     char filename[20];
     sprintf(filename, "%d.output", getpid());
     FILE *output_file = fopen(filename, "w");
-    if (output_file == NULL) {
-        perror("Error opening output file");
-        exit(EXIT_FAILURE); 
-    }
+    if (output_file == NULL) 
+        error("Error opening output file");
     return output_file;
 }
 
