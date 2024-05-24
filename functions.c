@@ -119,14 +119,34 @@ void *worker_thread(void *arg) {
             char response[BUFFER_SIZE];
             size_t total_read = 0;
             size_t read_bytes;
-            while ((read_bytes = fread(response + total_read, 1, BUFFER_SIZE - total_read, file)) > 0) {
+           // Construct start delimiter
+            char start_delimiter[BUFFER_SIZE];
+            sprintf(start_delimiter, "-----job_%d output start-----\n", temp->jobid);
+
+            // Add start delimiter to response
+            strcpy(response, start_delimiter);
+
+            // Read the file line by line until the end
+            while ((read_bytes = fread(response + strlen(response), 1, BUFFER_SIZE - total_read - strlen(response), file)) > 0) {
                 total_read += read_bytes;
-                if (total_read >= BUFFER_SIZE - 1) {
+                if (total_read >= BUFFER_SIZE - strlen(response) - 1) {
+                    // Buffer full, cannot read more
                     break;
                 }
             }
+
+            // Close the file
             fclose(file);
-            response[total_read] = '\0';
+
+            // Construct end delimiter
+            char end_delimiter[BUFFER_SIZE];
+            sprintf(end_delimiter, "\n-----job_%d output end-----", temp->jobid);
+
+            // Add end delimiter to response
+            strcat(response, end_delimiter);
+
+            // Null-terminate the buffer
+            response[BUFFER_SIZE - 1] = '\0';
 
             remove(filename);
             int n = write(clientSocket, response, strlen(response));
