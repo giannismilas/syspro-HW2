@@ -5,6 +5,7 @@
         "socket.h": "c",
         "stdlib.h": "c",
         "in.h": "c",
-        "pthread.h": "c"
+        "pthread.h": "c",
+        "qimplementation.h": "c"
     }
 }

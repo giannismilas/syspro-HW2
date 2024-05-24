@@ -72,7 +72,16 @@ void *controller_thread(void *arg) {
 }
 
 
-
+FILE* create_file(){
+    char filename[20];
+    sprintf(filename, "%d.output", getpid());
+    FILE *output_file = fopen(filename, "w");
+    if (output_file == NULL) {
+        perror("Error opening output file");
+        exit(EXIT_FAILURE); 
+    }
+    return output_file;
+}
 
 
 void *worker_thread(void *arg) {
@@ -87,13 +96,7 @@ void *worker_thread(void *arg) {
             pthread_exit(NULL);
         } 
         else if (pid == 0) {
-            char filename[20];
-            sprintf(filename, "%d.output", getpid());
-            FILE *output_file = fopen(filename, "w");
-            if (output_file == NULL) {
-                perror("Error opening output file");
-                exit(EXIT_FAILURE); 
-            }
+            FILE *output_file=create_file();
             dup2(fileno(output_file), STDOUT_FILENO);
             char *args[BUFFER_SIZE];
             char *token = strtok(temp->job, " ");
@@ -104,48 +107,33 @@ void *worker_thread(void *arg) {
             }
             args[i] = NULL;
             execvp(args[0], args);
-            perror("execvp");
-            exit(EXIT_FAILURE);
-        } else {
+            error("execvp");
+        } 
+        else {
             waitpid(pid, &status, 0);
             char filename[20];
             sprintf(filename, "%d.output", pid);
 
             FILE *file = fopen(filename, "r");
-            if (file == NULL) {
-                perror("Error opening output file");
-                pthread_exit(NULL);
-            }
+            if (file == NULL)
+                error("Error opening output file");
             char response[BUFFER_SIZE];
             size_t total_read = 0;
             size_t read_bytes;
-           // Construct start delimiter
             char start_delimiter[BUFFER_SIZE];
             sprintf(start_delimiter, "-----job_%d output start-----\n", temp->jobid);
 
-            // Add start delimiter to response
             strcpy(response, start_delimiter);
-
-            // Read the file line by line until the end
             while ((read_bytes = fread(response + strlen(response), 1, BUFFER_SIZE - total_read - strlen(response), file)) > 0) {
                 total_read += read_bytes;
                 if (total_read >= BUFFER_SIZE - strlen(response) - 1) {
-                    // Buffer full, cannot read more
                     break;
                 }
             }
-
-            // Close the file
             fclose(file);
-
-            // Construct end delimiter
             char end_delimiter[BUFFER_SIZE];
             sprintf(end_delimiter, "\n-----job_%d output end-----", temp->jobid);
-
-            // Add end delimiter to response
             strcat(response, end_delimiter);
-
-            // Null-terminate the buffer
             response[BUFFER_SIZE - 1] = '\0';
 
             remove(filename);
