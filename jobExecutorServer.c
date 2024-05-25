@@ -13,11 +13,11 @@
 extern queueptr myqueue;
 volatile sig_atomic_t is_running = 1;
 int newsockfd;
-
+int sockfd;
 
 void custom_signal_handler(){
     is_running=0;
-    shutdown(newsockfd, SHUT_RDWR);
+    shutdown(sockfd, SHUT_RDWR);
 }
 
 int main(int argc, char *argv[]){
@@ -30,7 +30,7 @@ int main(int argc, char *argv[]){
     int threadPoolSize = atoi(argv[3]);
     myqueue=initQueue(bufferSize);
 
-    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd < 0) 
         error("ERROR opening socket");
 
