@@ -6,15 +6,25 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <pthread.h>
+#include <signal.h>
 #include "functions.h"
 #include "Qimplementation.h"
 
 extern queueptr myqueue;
+volatile sig_atomic_t is_running = 1;
+int newsockfd;
+
+
+void custom_signal_handler(){
+    is_running=0;
+    shutdown(newsockfd, SHUT_RDWR);
+}
 
 int main(int argc, char *argv[]){
     if (argc != 4) {
         return 1;
     }
+    signal(SIGUSR1, custom_signal_handler);
     int port_num = atoi(argv[1]);
     int bufferSize = atoi(argv[2]);
     int threadPoolSize = atoi(argv[3]);
@@ -37,10 +47,6 @@ int main(int argc, char *argv[]){
 
     // Listen for connections
     listen(sockfd, 5);
-
-
-
-
     // Create worker threads
     pthread_t worker_threads[threadPoolSize];
     for (int i = 0; i < threadPoolSize; i++) {
@@ -51,7 +57,12 @@ int main(int argc, char *argv[]){
     while (1) {
         struct sockaddr_in client_addr;
         socklen_t client_len = sizeof(client_addr);
-        int newsockfd = accept(sockfd, (struct sockaddr *) &client_addr, &client_len);
+        
+        newsockfd = accept(sockfd, (struct sockaddr *) &client_addr, &client_len);
+        if(!is_running){
+            printf("sdoasdnsasdnujiohnijuasdnj\n");
+            break;
+        }
         if (newsockfd < 0) 
             error("ERROR on accept");
 
@@ -62,10 +73,4 @@ int main(int argc, char *argv[]){
 
     close(sockfd);
     return 0;
-
-
-
-
-
-
 }

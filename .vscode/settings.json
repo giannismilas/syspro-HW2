@@ -6,6 +6,7 @@
         "stdlib.h": "c",
         "in.h": "c",
         "pthread.h": "c",
-        "qimplementation.h": "c"
+        "qimplementation.h": "c",
+        "string.h": "c"
     }
 }

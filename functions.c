@@ -8,6 +8,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <pthread.h>
+#include <signal.h>
 #include <sys/wait.h>
 
 FILE* create_file();
@@ -42,6 +43,9 @@ void *controller_thread(void *arg) {
     if(!strcmp(command,"issueJob")){
         temp=enqueue(myqueue,args,clientSocket);
         sprintf(response,"JOB <job_%d,%s> SUBMITTED",temp->jobid,temp->job);
+        n = write(clientSocket, response, strlen(response));
+        if (n < 0)
+            error("ERROR writing to socket");
     }
     else if(!strcmp(command,"setConcurrency")){
 
@@ -55,20 +59,26 @@ void *controller_thread(void *arg) {
         else{
             sprintf(response,"JOB <job_%d> REMOVED",id);
         }
+        n = write(clientSocket, response, strlen(response));
+        if (n < 0)
+            error("ERROR writing to socket");
+        close(clientSocket);
     }
     else if(!strcmp(command,"poll")){
         write_queue_to_buffer(myqueue, response);
+        n = write(clientSocket, response, strlen(response));
+        if (n < 0)
+            error("ERROR writing to socket");
+        close(clientSocket);
     }
     else if(!strcmp(command,"exit")){
-        
-    }
-    n = write(clientSocket, response, strlen(response));
-    if (n < 0)
-        error("ERROR writing to socket");
-
-    // Close client socket
-    if(strcmp(command,"issueJob"))
+        sprintf(response,"SERVER TERMINATED");
+        n = write(clientSocket, response, strlen(response));
+        if (n < 0)
+            error("ERROR writing to socket");
         close(clientSocket);
+        pthread_kill(pthread_self(), SIGUSR1);
+    }
     pthread_exit(NULL);
 }
 
