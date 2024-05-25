@@ -72,6 +72,7 @@ void *controller_thread(void *arg) {
         close(clientSocket);
     }
     else if(!strcmp(command,"exit")){
+        empty_queue_and_inform(myqueue);
         sprintf(response,"SERVER TERMINATED");
         n = write(clientSocket, response, strlen(response));
         if (n < 0)

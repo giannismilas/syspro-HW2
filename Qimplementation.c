@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <pthread.h>
 #include "functions.h"
 #include "Qimplementation.h"
@@ -155,4 +156,17 @@ void write_queue_to_buffer(queueptr q, char* buffer) {
         current = current->next;
     }
     pthread_mutex_unlock(&q->mtx);
+}
+
+
+void empty_queue_and_inform(queueptr q){
+    char response[BUFFER_SIZE];
+    sprintf(response,"SERVER TERMINATED BEFORE EXECUTION");
+    while(!isEmpty(q)){
+        nodeptr temp=dequeue(q);
+        int n = write(temp->clientSocket, response, strlen(response));
+        if (n < 0)
+            error("ERROR writing to socket");
+        close(temp->clientSocket);
+    }
 }

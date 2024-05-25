@@ -34,3 +34,4 @@ nodeptr dequeue(queueptr);
 void freeQueue(queueptr);
 nodeptr deleteJobID(queueptr, int);
 void write_queue_to_buffer(queueptr, char*);
+void empty_queue_and_inform(queueptr);
