@@ -18,7 +18,10 @@ int main(int argc, char** argv){
         fprintf(stderr, "Usage: %s hostname port command\n", argv[0]);
         exit(1);
     }
-
+    if(strcmp(argv[3],"setConcurrency") && strcmp(argv[3],"issueJob") && strcmp(argv[3],"poll") && strcmp(argv[3],"exit") && strcmp(argv[3],"stop")){
+        printf("No <%s> command\n",argv[3]);
+        return 1;
+    }
     char* server_name = argv[1];
     int port_num = atoi(argv[2]);
     char command[BUFFER_SIZE];
