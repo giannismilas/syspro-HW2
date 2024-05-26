@@ -48,7 +48,13 @@ void *controller_thread(void *arg) {
             error("ERROR writing to socket");
     }
     else if(!strcmp(command,"setConcurrency")){
-
+        pthread_mutex_lock(&myqueue->mtx);
+            myqueue->concurrency=atoi(args); 
+        pthread_mutex_unlock(&myqueue->mtx);
+        sprintf(response,"CONCURRENCY SET AT %d",atoi(args));
+        n = write(clientSocket, response, strlen(response));
+        if (n < 0)
+            error("ERROR writing to socket");
     }
     else if(!strcmp(command,"stop")){
         int id;

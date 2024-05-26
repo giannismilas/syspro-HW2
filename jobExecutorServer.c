@@ -58,10 +58,9 @@ int main(int argc, char *argv[]){
         socklen_t client_len = sizeof(client_addr);
         
         int newsockfd = accept(sockfd, (struct sockaddr *) &client_addr, &client_len);
-        if(!is_running){
-            printf("sdoasdnsasdnujiohnijuasdnj\n");
+        if(!is_running)
             break;
-        }
+        
         if (newsockfd < 0) 
             error("ERROR on accept");
 
