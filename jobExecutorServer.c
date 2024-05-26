@@ -12,7 +12,6 @@
 
 extern queueptr myqueue;
 volatile sig_atomic_t is_running = 1;
-int newsockfd;
 int sockfd;
 
 void custom_signal_handler(){
@@ -58,7 +57,7 @@ int main(int argc, char *argv[]){
         struct sockaddr_in client_addr;
         socklen_t client_len = sizeof(client_addr);
         
-        newsockfd = accept(sockfd, (struct sockaddr *) &client_addr, &client_len);
+        int newsockfd = accept(sockfd, (struct sockaddr *) &client_addr, &client_len);
         if(!is_running){
             printf("sdoasdnsasdnujiohnijuasdnj\n");
             break;
