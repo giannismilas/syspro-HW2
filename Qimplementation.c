@@ -38,6 +38,7 @@ queueptr initQueue(int max_items) {                                             
     newQueue->concurrency=1;
     newQueue->cur_jobid=0;
     newQueue->currently_running=0;
+    newQueue->worker_exit=0;
     return newQueue;
 }
 
@@ -73,8 +74,12 @@ nodeptr enqueue(queueptr q,  char* job, int clientSocket) {          //insert a 
 
 nodeptr dequeue(queueptr q) {                                                   //remove a job from the front of the queue and modify all qpositions of the rest of the nodes
     pthread_mutex_lock(&q->mtx);
-    while (q->size == 0)
+    while (!q->worker_exit && q->size == 0)
         pthread_cond_wait(&q->job_available, &q->mtx);
+    if (q->worker_exit) {
+        pthread_mutex_unlock(&q->mtx);
+        return NULL;
+    }
     while (q->currently_running >= q->concurrency)
         pthread_cond_wait(&q->job_available, &q->mtx);
     nodeptr temp = q->front;

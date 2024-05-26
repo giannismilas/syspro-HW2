@@ -17,6 +17,7 @@ struct Q{
     pthread_mutex_t mtx;
     pthread_cond_t job_available; 
     pthread_cond_t room_available; 
+    int worker_exit;
     int max_items;
     int concurrency;
     int cur_jobid;

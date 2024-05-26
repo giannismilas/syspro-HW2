@@ -69,6 +69,16 @@ int main(int argc, char *argv[]){
         pthread_create(&controller_thread_id, NULL, controller_thread, &newsockfd);
     }
 
+    pthread_mutex_lock(&myqueue->mtx);
+    myqueue->worker_exit = 1;
+    for (int i = 0; i < threadPoolSize; i++) {
+        pthread_cond_signal(&myqueue->job_available); 
+    }
+    pthread_mutex_unlock(&myqueue->mtx);
+
+    for (int i = 0; i < threadPoolSize; i++) {
+        pthread_join(worker_threads[i], NULL);
+    }
     close(sockfd);
     return 0;
 }
