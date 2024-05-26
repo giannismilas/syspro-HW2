@@ -55,6 +55,7 @@ void *controller_thread(void *arg) {
         n = write(clientSocket, response, strlen(response));
         if (n < 0)
             error("ERROR writing to socket");
+        close(clientSocket);
     }
     else if(!strcmp(command,"stop")){
         int id;
