@@ -150,10 +150,10 @@ void send_output(int pid, int jobid, int clientSocket) {
         error("Error opening output file");
 
     char start_message[BUFFER_SIZE];
-    sprintf(start_message, "-----job_%d output start-----\n", jobid);
+    sprintf(start_message, "-----job_%d output start-----", jobid);
 
     char end_message[BUFFER_SIZE];
-    sprintf(end_message, "\n-----job_%d output end-----", jobid);
+    sprintf(end_message, "-----job_%d output end-----", jobid);
 
     // Send start message
     if (write(clientSocket, start_message, strlen(start_message)) < 0)
