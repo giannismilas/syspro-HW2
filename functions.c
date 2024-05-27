@@ -142,6 +142,7 @@ FILE* create_file(){
 }
 
 
+
 void send_output(int pid, int jobid, int clientSocket) {
     char filename[20];
     sprintf(filename, "%d.output", pid);
@@ -151,48 +152,27 @@ void send_output(int pid, int jobid, int clientSocket) {
         error("Error opening output file");
 
     char start_message[BUFFER_SIZE];
-    memset(start_message, 0, BUFFER_SIZE);
     sprintf(start_message, "-----job_%d output start-----\n", jobid);
 
     char end_message[BUFFER_SIZE];
-    memset(end_message, 0, BUFFER_SIZE);
     sprintf(end_message, "\n-----job_%d output end-----", jobid);
 
-    size_t total_read = 0;
-    char *response = (char *)malloc(BUFFER_SIZE); // Allocate initial memory
-    if (response == NULL)
-        error("Memory allocation error");
-
-    strcpy(response, start_message);
-    total_read += strlen(start_message);
-
-    size_t read_bytes;
-    while ((read_bytes = fread(response + total_read, 1, BUFFER_SIZE - total_read - strlen(end_message), file)) > 0) {
-        total_read += read_bytes;
-
-        if (total_read >= BUFFER_SIZE - strlen(end_message) - 1) {
-            // Reallocate memory if needed
-            response = (char *)realloc(response, total_read + BUFFER_SIZE);
-            if (response == NULL)
-                error("Memory reallocation error");
-        }
-    }
-
-    // Add end message
-    strcat(response, end_message);
-    total_read += strlen(end_message);
-
-    fclose(file);
-
-    // Remove output file
-    if (remove(filename) != 0)
-        error("Error deleting output file");
-
-    // Send response
-    int n = write(clientSocket, response, total_read);
-    if (n < 0)
+    // Send start message
+    if (write(clientSocket, start_message, strlen(start_message)) < 0)
         error("ERROR writing to socket");
 
-    free(response); // Free allocated memory
+    char response[BUFFER_SIZE];
+    size_t read_bytes;
+    while ((read_bytes = fread(response, 1, BUFFER_SIZE, file)) > 0) {
+        if (write(clientSocket, response, read_bytes) < 0)
+            error("ERROR writing to socket");
+    }
+
+    // Send end message
+    if (write(clientSocket, end_message, strlen(end_message)) < 0)
+        error("ERROR writing to socket");
+
+    fclose(file);
+    remove(filename);
     close(clientSocket);
 }
