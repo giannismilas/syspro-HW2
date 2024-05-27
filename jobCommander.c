@@ -52,18 +52,22 @@ int main(int argc, char** argv){
 
     // Wait for the response from the server
     char response[BUFFER_SIZE];
-    memset(response, 0, BUFFER_SIZE);
-    n = read(sockfd, response, BUFFER_SIZE);
-    if (n < 0)
-        error("ERROR reading from socket");
-    printf("%s\n", response);
-
-    if(!strcmp(argv[3],"issueJob") && strcmp(response,"SERVER TERMINATED BEFORE EXECUTION")){
+    while(1){
         memset(response, 0, BUFFER_SIZE);
         n = read(sockfd, response, BUFFER_SIZE);
-        if (n < 0)
-            error("ERROR reading from socket");
+        if(n<=0)
+            break;
         printf("%s\n", response);
+    }
+
+    if(!strcmp(argv[3],"issueJob") && strcmp(response,"SERVER TERMINATED BEFORE EXECUTION")){
+        while(1){
+            memset(response, 0, BUFFER_SIZE);
+            n = read(sockfd, response, BUFFER_SIZE);
+            if(n<=0)
+                break;
+            printf("%s\n", response);
+        }
     }
 
 
