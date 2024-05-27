@@ -49,7 +49,7 @@ void *controller_thread(void *arg) {
     }
     else if(!strcmp(command,"setConcurrency")){
         pthread_mutex_lock(&myqueue->mtx);
-            myqueue->concurrency=atoi(args); 
+        myqueue->concurrency=atoi(args); 
         pthread_mutex_unlock(&myqueue->mtx);
         sprintf(response,"CONCURRENCY SET AT %d",atoi(args));
         n = write(clientSocket, response, strlen(response));
