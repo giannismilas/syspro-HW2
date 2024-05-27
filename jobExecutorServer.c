@@ -20,9 +20,9 @@ void custom_signal_handler(){
 }
 
 int main(int argc, char *argv[]){
-    if (argc != 4) {
+    if (argc != 4) 
         return 1;
-    }
+    
     signal(SIGUSR1, custom_signal_handler);
     int port_num = atoi(argv[1]);
     int bufferSize = atoi(argv[2]);
@@ -48,9 +48,9 @@ int main(int argc, char *argv[]){
     listen(sockfd, 5);
     // Create worker threads
     pthread_t worker_threads[threadPoolSize];
-    for (int i = 0; i < threadPoolSize; i++) {
+    for (int i = 0; i < threadPoolSize; i++) 
         pthread_create(&worker_threads[i], NULL, worker_thread, NULL);
-    }
+    
 
 
     while (1) {
@@ -71,9 +71,9 @@ int main(int argc, char *argv[]){
 
     pthread_mutex_lock(&myqueue->mtx);
     myqueue->worker_exit = 1;
-    for (int i = 0; i < threadPoolSize; i++) {
+    for (int i = 0; i < threadPoolSize; i++) 
         pthread_cond_signal(&myqueue->job_available); 
-    }
+    
     pthread_mutex_unlock(&myqueue->mtx);
 
     for (int i = 0; i < threadPoolSize; i++) {

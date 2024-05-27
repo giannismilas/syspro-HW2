@@ -60,12 +60,10 @@ void *controller_thread(void *arg) {
     else if(!strcmp(command,"stop")){
         int id;
         sscanf(args, "job_%d", &id);
-        if((temp=deleteJobID(myqueue,id))==NULL){
+        if((temp=deleteJobID(myqueue,id))==NULL)
             sprintf(response,"JOB <job_%d> NOTFOUND",id);
-        }
-        else{
+        else
             sprintf(response,"JOB <job_%d> REMOVED",id);
-        }
         n = write(clientSocket, response, strlen(response));
         if (n < 0)
             error("ERROR writing to socket");
