@@ -12,9 +12,13 @@
 #include <sys/wait.h>
 
 FILE* create_file();
-void send_output(int pid, int jobid, int clientSocket);
-
 extern queueptr myqueue;
+
+void send_output(int pid, int jobid, int clientSocket);
+void issueJob_command(char *args,int clientSocket);
+void setConcurrency_command(char *args,int clientSocket);
+void stop_command(char *args,int clientSocket);
+void poll_command(int clientSocket);
 
 void error(const char *msg) {
     perror(msg);
@@ -38,43 +42,18 @@ void *controller_thread(void *arg) {
 
     // Extract the command and the rest of the input
     sscanf(jobCommanderInputCommand, "%s %[^\n]", command, args);
-    nodeptr temp;
     char response[BUFFER_SIZE];
     if(!strcmp(command,"issueJob")){
-        temp=enqueue(myqueue,args,clientSocket);
-        sprintf(response,"JOB <job_%d,%s> SUBMITTED",temp->jobid,temp->job);
-        n = write(clientSocket, response, strlen(response));
-        if (n < 0)
-            error("ERROR writing to socket");
+        issueJob_command(args,clientSocket);
     }
     else if(!strcmp(command,"setConcurrency")){
-        pthread_mutex_lock(&myqueue->mtx);
-        myqueue->concurrency=atoi(args); 
-        pthread_mutex_unlock(&myqueue->mtx);
-        sprintf(response,"CONCURRENCY SET AT %d",atoi(args));
-        n = write(clientSocket, response, strlen(response));
-        if (n < 0)
-            error("ERROR writing to socket");
-        close(clientSocket);
+        setConcurrency_command(args,clientSocket);
     }
     else if(!strcmp(command,"stop")){
-        int id;
-        sscanf(args, "job_%d", &id);
-        if((temp=deleteJobID(myqueue,id))==NULL)
-            sprintf(response,"JOB <job_%d> NOTFOUND",id);
-        else
-            sprintf(response,"JOB <job_%d> REMOVED",id);
-        n = write(clientSocket, response, strlen(response));
-        if (n < 0)
-            error("ERROR writing to socket");
-        close(clientSocket);
+        stop_command(args,clientSocket);
     }
     else if(!strcmp(command,"poll")){
-        write_queue_to_buffer(myqueue, response);
-        n = write(clientSocket, response, strlen(response));
-        if (n < 0)
-            error("ERROR writing to socket");
-        close(clientSocket);
+        poll_command(clientSocket);
     }
     else if(!strcmp(command,"exit")){
         empty_queue_and_inform(myqueue);
@@ -128,6 +107,58 @@ void *worker_thread(void *arg) {
     pthread_exit(NULL);
 }
 
+
+
+void issueJob_command(char *args,int clientSocket){
+    nodeptr temp;
+    char response[BUFFER_SIZE];
+    temp=enqueue(myqueue,args,clientSocket);
+    sprintf(response,"JOB <job_%d,%s> SUBMITTED",temp->jobid,temp->job);
+    int n = write(clientSocket, response, strlen(response));
+    if (n < 0)
+        error("ERROR writing to socket");
+}
+
+
+void setConcurrency_command(char *args,int clientSocket){
+    char response[BUFFER_SIZE];
+    pthread_mutex_lock(&myqueue->mtx);
+    myqueue->concurrency=atoi(args); 
+    pthread_mutex_unlock(&myqueue->mtx);
+    sprintf(response,"CONCURRENCY SET AT %d",atoi(args));
+    int n = write(clientSocket, response, strlen(response));
+    if (n < 0)
+        error("ERROR writing to socket");
+    close(clientSocket);
+}
+
+
+void stop_command(char *args,int clientSocket){
+    char response[BUFFER_SIZE];
+    nodeptr temp;
+    int id;
+    sscanf(args, "job_%d", &id);
+    if((temp=deleteJobID(myqueue,id))==NULL)
+        sprintf(response,"JOB <job_%d> NOTFOUND",id);
+    else
+        sprintf(response,"JOB <job_%d> REMOVED",id);
+    int n = write(clientSocket, response, strlen(response));
+    if (n < 0)
+        error("ERROR writing to socket");
+    close(clientSocket);
+}
+
+
+
+void poll_command(int clientSocket){
+    char response[BUFFER_SIZE];
+    write_queue_to_buffer(myqueue, response);
+    int n = write(clientSocket, response, strlen(response));
+    printf("%s\n\n\n",response);
+    if (n < 0)
+        error("ERROR writing to socket");
+    close(clientSocket);
+}
 
 
 FILE* create_file(){

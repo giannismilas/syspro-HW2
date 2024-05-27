@@ -41,11 +41,7 @@ $(EXEC_JOB_EXECUTOR): $(OBJS_JOB_EXECUTOR)
 
 # Run target
 run: $(EXEC_JOB_COMMANDER)
-	@./$(EXEC_JOB_COMMANDER) linux12.di.uoa.gr 7857 issueJob ls
-	@./$(EXEC_JOB_COMMANDER) linux12.di.uoa.gr 7857 issueJob ls
-	@./$(EXEC_JOB_COMMANDER) linux12.di.uoa.gr 7857 issueJob ls
-	@./$(EXEC_JOB_COMMANDER) linux12.di.uoa.gr 7857 issueJob ls
-	@./$(EXEC_JOB_COMMANDER) linux12.di.uoa.gr 7857 issueJob ls
+	@./$(EXEC_JOB_COMMANDER) linux12.di.uoa.gr 7857 issueJob test 10
 
 
 # Clean target
