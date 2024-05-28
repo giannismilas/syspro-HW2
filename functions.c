@@ -104,6 +104,7 @@ void *worker_thread(void *arg) {
             pthread_mutex_unlock(&myqueue->mtx);
         }
     }
+    printf("goodbye\n");
     pthread_exit(NULL);
 }
 
