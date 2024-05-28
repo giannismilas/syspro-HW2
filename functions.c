@@ -73,7 +73,7 @@ void *worker_thread(void *arg) {
     while(1) {
         if(myqueue->worker_exit)
             break;
-        nodeptr temp = dequeue(myqueue);
+        nodeptr temp = lock_dequeue(myqueue);
         if(myqueue->worker_exit || temp==NULL)
             break;
         int clientSocket = temp->clientSocket;

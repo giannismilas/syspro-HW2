@@ -72,7 +72,7 @@ nodeptr enqueue(queueptr q,  char* job, int clientSocket) {          //insert a 
 }
 
 
-nodeptr dequeue(queueptr q) {                                                   //remove a job from the front of the queue and modify all qpositions of the rest of the nodes
+nodeptr lock_dequeue(queueptr q) {                                                   //remove a job from the front of the queue and modify all qpositions of the rest of the nodes
     pthread_mutex_lock(&q->mtx);
     while (!q->worker_exit && q->size == 0)
         pthread_cond_wait(&q->job_available, &q->mtx);
@@ -93,6 +93,19 @@ nodeptr dequeue(queueptr q) {                                                   
 
 
 
+nodeptr dequeue(queueptr q) {                                                   //remove a job from the front of the queue and modify all qpositions of the rest of the nodes
+    if(q->size==q->max_items)
+        return NULL;
+    nodeptr temp = q->front;
+    q->front = q->front->next;
+    q->size--;
+    q->currently_running++;;
+    return temp;
+}
+
+
+
+
 void freeQueue(queueptr q) {                                                    //free the whole structure of the queue 
     while (!isEmpty(q))
         dequeue(q);
@@ -101,12 +114,8 @@ void freeQueue(queueptr q) {                                                    
 
 
 nodeptr deleteJobID(queueptr q, int jobID) {
-    // Acquire the mutex lock to ensure thread safety
-    pthread_mutex_lock(&q->mtx);
     
     if (isEmpty(q)) {
-        // Release the mutex lock before returning
-        pthread_mutex_unlock(&q->mtx);
         return NULL;
     }
     
@@ -119,14 +128,10 @@ nodeptr deleteJobID(queueptr q, int jobID) {
     }
     
     if (current == NULL) {
-        // Release the mutex lock before returning
-        pthread_mutex_unlock(&q->mtx);
         return NULL;
     }
     
     if (prev == NULL) {
-        // Release the mutex lock before calling dequeue
-        pthread_mutex_unlock(&q->mtx);
         return dequeue(q);
     } else {
         prev->next = current->next;
@@ -136,9 +141,6 @@ nodeptr deleteJobID(queueptr q, int jobID) {
         q->rear = prev;
     
     q->size--;
-    
-    // Release the mutex lock before returning
-    pthread_mutex_unlock(&q->mtx);
     
     return current;
 }
