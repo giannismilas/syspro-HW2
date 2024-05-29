@@ -62,6 +62,7 @@ jobCommander.c
 
 
 functions.c
+
 -void *controller_thread(void *arg)
 Η ΣΥΝΑΡΤΗΣΗ ΑΥΤΗ ΧΡΗΣΙΜΟΠΟΙΕΙΤΑΙ ΓΙΑ ΤΗΝ ΥΛΟΠΟΙΗΣΗ ΤΗΣ ΛΟΓΙΚΗΣ ΤΟΥ CONTROLLER THREAD
 ΣΥΓΚΕΚΡΙΜΕΝΑ ΜΕ ΤΗΝ ΚΛΗΣΗ ΤΗΣ ΔΙΑΒΑΖΕΤΑΙ Η ΕΝΤΟΛΗ ΠΟΥ ΕΔΩΣΕ Ο COMMANDER ΜΕΣΩ ΤΟΥ SOCKET
@@ -84,7 +85,7 @@ functions.c
 ΜΕΤΑ ΤΗΝ ΕΙΣΑΓΩΓΗ ΣΤΕΛΝΕΙ ΤΟ ΚΑΤΑΛΛΗΛΟ ΜΗΝΥΜΑ ΣΤΟ COMMANDER ΜΕΣΩ ΤΟΥ SOCKET
 
 
-void setConcurrency_command(char *args,int clientSocket)
+-void setConcurrency_command(char *args,int clientSocket)
 Η ΣΥΝΑΡΤΗΣΗ ΔΕΧΕΤΑΙ ΤΟ ΝΕΟ ΒΑΘΜΟ ΠΑΡΑΛΛΗΛΙΑΣ ΠΟΥ ΘΕΤΕΙ Ο ΧΡΗΣΤΗΣ ΚΑΘΩΣ ΚΑΙ ΤΟ CLIENTSOCKET ΤΟΥ COMMANDER ΚΑΙ ΕΝΗΜΕΡΩΝΕΙ ΤΗΝ ΑΝΤΙΣΤΟΙΧΗ ΜΕΤΑΒΛΗΤΗ ΤΟΥ ΠΡΟΓΡΑΜΜΑΤΟΣ
 ΣΕ ΠΕΡΙΠΤΩΣΗ ΠΟΥ ΤΕΘΗΚΕ ΜΕΓΑΛΥΤΕΡΟΣ ΒΑΘΜΟΣ ΠΑΡΑΛΛΗΛΙΑΣ ΑΠΟ ΤΟΝ ΠΡΟΗΓΟΥΜΕΝΟ ΓΙΝΕΤΑΙ ΑΝΤΙΣΤΟΙΧΗ ΕΝΗΜΕΡΩΣΗ ΤΩΝ WORKER
 ΤΕΛΟΣ ΑΠΟΣΤΕΛΕΤΑΙ ΤΟ ΜΗΝΥΜΑ ΣΤΟ COMMANDER
@@ -130,7 +131,7 @@ Qimplementation.c
 ΤΕΛΟΣ ΞΕΚΛΕΙΔΩΝΕΙ ΤΗΝ ΟΥΡΑ ΚΑΙ ΕΝΗΜΕΡΩΝΕΙ ΤΟΥΣ WORKER ΓΙΑ JOB AVAILABILITY
 
 
-nodeptr lock_dequeue(queueptr )
+-nodeptr lock_dequeue(queueptr )
 ΚΑΝΕΙ MUTEX LOCK ΚΑΙ ΓΙΝΕΤΑΙ ΕΛΕΓΧΟΣ ΤΗΣ CONDITION VARIABLE ΓΙΑ ΔΙΑΘΕΣΙΜΗ ΔΟΥΛΕΙΑ ΑΛΛΑ ΚΑΙ ΤΗΣ ΠΕΡΙΠΤΩΣΗΣ ΤΕΡΜΑΤΙΣΜΟΥ ΤΟΥ WORKER ΣΤΗΝ ΟΠΟΙΑ ΕΠΙΣΤΡΕΦΕΙ NULL
 ΣΤΗ ΣΥΝΕΧΕΙ ΕΛΕΓΧΕΤΑΙ ΑΝ Ο ΤΡΕΧΟΝ ΒΑΘΜΟΣ ΠΑΡΑΛΛΗΛΙΑΣ ΕΠΙΤΡΕΠΕΙ ΕΚΤΕΛΕΣΗ ΤΗΣ ΔΟΥΛΕΙΑΣ
 ΤΕΛΟΣ ΓΙΝΕΤΑΙ ΑΦΑΙΡΕΣΗ ΤΗΣ ΑΠΟ ΤΗΝ ΟΥΡΑ, ΓΙΝΕΤΑΙ UNLOCK ΚΑΙ ΕΝΗΜΕΡΩΝΕΤΑΙ ΤΥΧΟΝ COMMANDER ΓΙΑ ΝΕΟ ΧΩΡΟ ΔΙΑΘΕΣΙΜΟ ΣΤΗΝ ΟΥΡΑ
