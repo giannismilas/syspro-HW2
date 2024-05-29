@@ -121,6 +121,8 @@ void issueJob_command(char *args,int clientSocket){                             
 void setConcurrency_command(char *args,int clientSocket){                           //change the concurrency level of the program
     char response[BUFFER_SIZE];
     pthread_mutex_lock(&myqueue->mtx);
+    if(atoi(args)>myqueue->concurrency)
+        pthread_cond_signal(&myqueue->job_available);
     myqueue->concurrency=atoi(args); 
     pthread_mutex_unlock(&myqueue->mtx);
     sprintf(response,"CONCURRENCY SET AT %d",atoi(args));                           //send response back to commander
