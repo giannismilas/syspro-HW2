@@ -45,7 +45,7 @@ int main(int argc, char *argv[]){
 
     
     listen(sockfd, 5);                                      //Listen for connections
-    // Create worker threads
+
     pthread_t worker_threads[threadPoolSize];               //create the requested amount of workers that will wait until a job is available on the queue      
     for (int i = 0; i < threadPoolSize; i++) 
         pthread_create(&worker_threads[i], NULL, worker_thread, NULL);
