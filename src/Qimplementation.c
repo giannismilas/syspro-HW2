@@ -83,7 +83,7 @@ nodeptr lock_dequeue(queueptr q) {                                              
     while (q->currently_running >= q->concurrency)
         pthread_cond_wait(&q->job_available, &q->mtx);
     nodeptr temp = q->front;
-    if(temp==NULL)
+    if(temp==NULL || q->worker_exit)
         return NULL;
     q->front = q->front->next;
     q->size--;
