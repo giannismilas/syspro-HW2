@@ -158,7 +158,7 @@ void write_queue_to_buffer(queueptr q, char* buffer) {                          
 }
 
 
-void empty_queue_and_inform(queueptr q){                                                //empty the queue and inform the processes that were waiting with message when server shuts down
+void empty_queue_and_inform(queueptr q){                                                    //empty the queue and inform the processes that were waiting with message when server shuts down
     char response[BUFFER_SIZE];
     sprintf(response,"SERVER TERMINATED BEFORE EXECUTION");
     while(!isEmpty(q)){
