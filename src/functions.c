@@ -102,6 +102,7 @@ void *worker_thread(void *arg) {
             pthread_mutex_lock(&myqueue->mtx);
             myqueue->currently_running--; 
             pthread_mutex_unlock(&myqueue->mtx);
+            free(temp);
         }
     }
     printf("goodbye\n");
@@ -147,6 +148,8 @@ void stop_command(char *args,int clientSocket){
     if (n < 0)
         error("ERROR writing to socket");
     close(clientSocket);
+    if(temp!=NULL)
+        free(temp);
 }
 
 

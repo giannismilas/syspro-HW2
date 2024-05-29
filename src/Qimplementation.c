@@ -7,7 +7,7 @@
 #include "Qimplementation.h"
 
 
-nodeptr createNode(int jobid, char* job,int clientSocket) {    //simple newnode function that allocates space for a new queue node to add job info and returns pointer 
+nodeptr createNode(int jobid, char* job,int clientSocket) {                                 //simple newnode function that allocates space for a new queue node to add job info and returns pointer 
     nodeptr newNode = (nodeptr)malloc(sizeof(struct node));
     if (newNode == NULL) {
         printf("Memory allocation failed\n");
@@ -43,44 +43,44 @@ queueptr initQueue(int max_items) {                                             
 }
 
 
-int isEmpty(queueptr q) {                                                       //check if queue is Empty
+int isEmpty(queueptr q) {                                                                   //check if queue is Empty
     return (q->front == NULL);
 }
 
 
-nodeptr enqueue(queueptr q,  char* job, int clientSocket) {          //insert a node to the rear of the queue
-    pthread_mutex_lock(&q->mtx);
-    while (q->size == q->max_items)
+nodeptr enqueue(queueptr q,  char* job, int clientSocket) {                                 //insert a node to the rear of the queue
+    pthread_mutex_lock(&q->mtx);                                                            //access to queue
+    while (q->size == q->max_items)                                                         //wait until there is space available
         pthread_cond_wait(&q->room_available, &q->mtx);
     
-    nodeptr newNode;
-    if (isEmpty(q)) {                                                           //first node so front and rear pointer show to the new node
+    nodeptr newNode;    
+    if (isEmpty(q)) {                                                                       //first node so front and rear pointer show to the new node
         newNode = createNode(q->cur_jobid, job,clientSocket);
         q->front = newNode;
         q->rear = newNode;
     } 
-    else {                                                                      //insert to the rear with increased position
+    else {                                                                                  //insert to the rear with increased position
         newNode = createNode(q->cur_jobid, job,clientSocket);
         q->rear->next = newNode;
         q->rear = newNode;
     }
-    q->size++;                                                                  //increase the size of the queue
+    q->size++;                                                                              //increase the size of the queue
     q->cur_jobid++;
-    pthread_cond_signal(&q->job_available);
-    pthread_mutex_unlock(&q->mtx);
+    pthread_cond_signal(&q->job_available);                                                 //inform for new job
+    pthread_mutex_unlock(&q->mtx);                                                          //unlock
     return newNode;
 }
 
 
-nodeptr lock_dequeue(queueptr q) {                                                   //remove a job from the front of the queue and modify all qpositions of the rest of the nodes
-    pthread_mutex_lock(&q->mtx);
-    while (!q->worker_exit && q->size == 0)
+nodeptr lock_dequeue(queueptr q) {                                                          //remove a job from the front of the queue and modify all qpositions of the rest of the nodes
+    pthread_mutex_lock(&q->mtx);                                                            //lock        
+    while (!q->worker_exit && q->size == 0)                                                 //wait until a job is available
         pthread_cond_wait(&q->job_available, &q->mtx);
-    if (q->worker_exit) {
+    if (q->worker_exit) {                                                                   //if server needs to shut down return
         pthread_mutex_unlock(&q->mtx);
         return NULL;
     }
-    while (q->currently_running >= q->concurrency)
+    while (q->currently_running >= q->concurrency)                                          //wait until concurrency allows execution
         pthread_cond_wait(&q->job_available, &q->mtx);
     nodeptr temp = q->front;
     if(temp==NULL || q->worker_exit)
@@ -95,7 +95,7 @@ nodeptr lock_dequeue(queueptr q) {                                              
 
 
 
-nodeptr dequeue(queueptr q) {                                                   //remove a job from the front of the queue and modify all qpositions of the rest of the nodes
+nodeptr dequeue(queueptr q) {                                                               //remove a job from the front of the queue and modify all qpositions of the rest of the nodes
     if(q->size==q->max_items)
         return NULL;
     nodeptr temp = q->front;
@@ -108,48 +108,38 @@ nodeptr dequeue(queueptr q) {                                                   
 
 
 
-void freeQueue(queueptr q) {                                                    //free the whole structure of the queue 
+void freeQueue(queueptr q) {                                                                //free the whole structure of the queue 
     while (!isEmpty(q))
         dequeue(q);
     free(q);
 }
 
 
-nodeptr deleteJobID(queueptr q, int jobID) {
-    
+nodeptr deleteJobID(queueptr q, int jobID) {                                                //search for a job with the specific id asked and remove from the queue
     if (isEmpty(q)) {
         return NULL;
     }
-    
     nodeptr current = q->front;
     nodeptr prev = NULL;
-    
     while (current != NULL && current->jobid != jobID) {
         prev = current;
         current = current->next;
     }
-    
-    if (current == NULL) {
+    if (current == NULL) 
         return NULL;
-    }
-    
-    if (prev == NULL) {
+    if (prev == NULL) 
         return dequeue(q);
-    } else {
+    else 
         prev->next = current->next;
-    }
-    
     if (current == q->rear)
         q->rear = prev;
-    
     q->size--;
-    
     return current;
 }
 
 
 
-void write_queue_to_buffer(queueptr q, char* buffer) {
+void write_queue_to_buffer(queueptr q, char* buffer) {                                      //write the queue to a buffer to print for poll command
     pthread_mutex_lock(&q->mtx);
     nodeptr current = q->front;
     buffer[0] = '\0';
@@ -168,7 +158,7 @@ void write_queue_to_buffer(queueptr q, char* buffer) {
 }
 
 
-void empty_queue_and_inform(queueptr q){
+void empty_queue_and_inform(queueptr q){                                                //empty the queue and inform the processes that were waiting with message when server shuts down
     char response[BUFFER_SIZE];
     sprintf(response,"SERVER TERMINATED BEFORE EXECUTION");
     while(!isEmpty(q)){
@@ -177,5 +167,6 @@ void empty_queue_and_inform(queueptr q){
         if (n < 0)
             error("ERROR writing to socket");
         close(temp->clientSocket);
+        free(temp);
     }
 }
