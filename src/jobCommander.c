@@ -14,7 +14,7 @@ int main(int argc, char** argv){
     struct sockaddr_in serv_addr;
     struct hostent *server;
     
-    if(argc < 4) {
+    if(argc < 4) {                                                                  //check if args are enough and command is correct
         fprintf(stderr, "Usage: %s hostname port command\n", argv[0]);
         exit(1);
     }
@@ -24,17 +24,17 @@ int main(int argc, char** argv){
     }
     char* server_name = argv[1];
     int port_num = atoi(argv[2]);
-    char command[BUFFER_SIZE];
+    char command[BUFFER_SIZE];                                                      //put the user command into a string
     int offset = 0;
     offset += sprintf(command + offset, "%s", argv[3]);
     for (int i = 4; i < argc; i++) 
         offset += sprintf(command + offset, " %s", argv[i]);
 
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);                                       //initialize socket
     if (sockfd < 0)
         error("Socket error\n");
 
-    server = gethostbyname(server_name);
+    server = gethostbyname(server_name);                                            //get server
     if (server == NULL) 
         error("No such host\n");
 
@@ -43,15 +43,15 @@ int main(int argc, char** argv){
     serv_addr.sin_addr = *((struct in_addr *)server->h_addr_list[0]);
     serv_addr.sin_port = htons(port_num);
 
-    if (connect(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) 
+    if (connect(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0)     //connect to server to send the user command
         error("ERROR connecting");
 
-    n = write(sockfd, command, strlen(command));
+    n = write(sockfd, command, strlen(command));                                    //write the command to the server socket
     if (n < 0)
         error("ERROR writing to socket");
 
-    // Wait for the response from the server
-    char response[BUFFER_SIZE];
+
+    char response[BUFFER_SIZE];                                                     //wait for response
     while(1){
         memset(response, 0, BUFFER_SIZE);
         n = read(sockfd, response, BUFFER_SIZE);
@@ -60,7 +60,7 @@ int main(int argc, char** argv){
         printf("%s\n", response);
     }
 
-    if(!strcmp(argv[3],"issueJob") && strcmp(response,"SERVER TERMINATED BEFORE EXECUTION")){
+    if(!strcmp(argv[3],"issueJob") && strcmp(response,"SERVER TERMINATED BEFORE EXECUTION")){       //if a new job is sent do additional waiting for the output of the job
         while(1){
             memset(response, 0, BUFFER_SIZE);
             n = read(sockfd, response, BUFFER_SIZE);
