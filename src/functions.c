@@ -66,6 +66,8 @@ void *controller_thread(void *arg) {                                            
 
 
 void *worker_thread(void *arg) {                                                    //the worker thread is based on a loop constantly removing items from the queue and executes them using fork and exec
+    if(arg!=NULL)
+        pthread_exit(NULL);
     while(1) {
         if(myqueue->worker_exit)                                                    //exit case
             break;
