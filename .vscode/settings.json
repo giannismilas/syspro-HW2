@@ -8,6 +8,11 @@
         "pthread.h": "c",
         "qimplementation.h": "c",
         "string.h": "c",
-        "functions.h": "c"
+        "functions.h": "c",
+        "array": "c",
+        "string_view": "c",
+        "initializer_list": "c",
+        "ranges": "c",
+        "utility": "c"
     }
 }
