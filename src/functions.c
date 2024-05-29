@@ -27,8 +27,6 @@ void error(const char *msg) {
 
 void *controller_thread(void *arg) {
     int clientSocket = *(int *)arg;
-
-    // Read command from client
     char jobCommanderInputCommand[BUFFER_SIZE];
     memset(jobCommanderInputCommand, 0, BUFFER_SIZE);
     int n = read(clientSocket, jobCommanderInputCommand, BUFFER_SIZE);
@@ -36,11 +34,9 @@ void *controller_thread(void *arg) {
         error("ERROR reading from socket");
     printf("%s\n",jobCommanderInputCommand);
     
-    // Process command and handle job
     char command[BUFFER_SIZE];
     char args[BUFFER_SIZE];
 
-    // Extract the command and the rest of the input
     sscanf(jobCommanderInputCommand, "%s %[^\n]", command, args);
     char response[BUFFER_SIZE];
     if(!strcmp(command,"issueJob")){

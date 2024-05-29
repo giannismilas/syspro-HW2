@@ -40,7 +40,6 @@ int main(int argc, char *argv[]){
     serv_addr.sin_addr.s_addr = INADDR_ANY;
     serv_addr.sin_port = htons(port_num);
 
-    // Bind socket to address
     if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) 
         error("ERROR on binding");
 
@@ -64,7 +63,6 @@ int main(int argc, char *argv[]){
         if (newsockfd < 0) 
             error("ERROR on accept");
 
-        // Create controller thread for each connection
         pthread_t controller_thread_id;
         pthread_create(&controller_thread_id, NULL, controller_thread, &newsockfd);
     }
