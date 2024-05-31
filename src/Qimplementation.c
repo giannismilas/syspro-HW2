@@ -145,7 +145,7 @@ void write_queue_to_buffer(queueptr q, char* buffer) {                          
     buffer[0] = '\0';
     while (current != NULL) {
         char temp[256];
-        snprintf(temp, sizeof(temp), "<%d, %s>\n", current->jobid, current->job);
+        snprintf(temp, sizeof(temp), "<job_%d, %s>\n", current->jobid, current->job);
         if (strlen(buffer) + strlen(temp) + 1 < BUFFER_SIZE) {
             strcat(buffer, temp);
         } 
