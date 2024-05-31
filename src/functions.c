@@ -32,7 +32,6 @@ void *controller_thread(void *arg) {                                            
     int n = read(clientSocket, jobCommanderInputCommand, BUFFER_SIZE);              //read the command
     if (n < 0) 
         error("ERROR reading from socket");
-    printf("%s\n",jobCommanderInputCommand);
     
     char command[BUFFER_SIZE];
     char args[BUFFER_SIZE];
@@ -103,7 +102,6 @@ void *worker_thread(void *arg) {                                                
             free(temp);                                                             //free node
         }
     }
-    printf("goodbye\n");
     pthread_exit(NULL);
 }
 
