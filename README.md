@@ -3,11 +3,17 @@
 
 Η ΥΛΟΠΟΙΗΣΗ ΤΗΣ ΕΦΑΡΜΟΓΗΣ ΒΑΣΙΖΕΤΑΙ ΣΤΑ ΕΞΗΣ ΑΡΧΕΙΑ
 jobCommander.c          ΠΕΡΙΕΧΕΙ ΤΗ MAIN ΣΥΝΑΡΤΗΣΗ ΠΟΥ ΧΡΗΣΙΜΟΠΟΙΕΙ Ο ΧΡΗΣΤΗΣ ΓΙΑ ΝΑ ΔΩΣΕΙ ΕΝΤΟΛΕΣ ΣΤΟΝ SERVER
+
 jobExecutorServer.c     ΠΕΡΙΕΧΕΙ ΤΗ MAIN ΣΥΝΑΡΤΗΣΗ ΤΟΥ SERVER Ο ΟΠΟΙΟΣ ΔΗΜΙΟΥΡΓΕΙ ΤΑ THREAD ΤΩΝ WORKER ΚΑΙ ΣΕ ΚΑΘΕ ΝΕΟ COMMANDER ΦΤΙΑΧΝΕΙ ΚΑΙ ΕΝΑ CONTROLLER THREAD
+
 Qimplementation.c       ΠΕΡΙΕΧΕΙ ΤΗΝ ΥΛΟΠΟΙΗΣΗ ΟΥΡΑΣ ΠΡΟΤΕΡΑΙΟΤΗΤΑΣ ΜΕ ΔΙΑΦΟΡΕΣ ΣΥΝΑΡΤΗΣΕΙΣ ΑΡΧΙΚΟΠΟΙΗΣΗΣ ΕΙΣΑΓΩΓΗΣ ΔΙΑΓΡΑΦΗΣ ΚΟΜΒΩΝ
+
 Qimplementation.h       ΠΕΡΙΕΧΕΙ ΠΡΟΤΥΠΑ ΣΥΝΑΡΤΗΣΕΩΝ ΤΗΣ Qimplementation.c
+
 functions.c             ΠΕΡΙΕΧΕΙ ΤΙΣ ΣΥΝΑΡΤΗΣΕΙΣ ΓΙΑ ΤΑ CONTROLLER KAI WORKER THREADS ΚΑΘΩΣ ΚΑΙ ΑΛΛΕΣ ΧΡΗΣΙΜΕΣ ΛΕΙΤΟΥΡΓΙΕΣ ΑΥΤΩΝ ΚΑΙ ΤΟΥ ΣΕΡΒΕΡ
+
 functions.h             ΠΕΡΙΕΧΕΙ ΠΡΟΤΥΠΑ ΣΥΝΑΡΤΗΣΕΩΝ ΤΗΣ functions.c ΚΑΘΩΣ ΚΑΙ ΕΝΑ BUFFERSIZE ΑΛΛΑ ΚΑΙ ΤΗΝ ΟΥΡΑ Η ΟΠΟΙΑ ΕΙΝΑΙ GLOBAL ΜΕΤΑΒΛΗΤΗ
+
 makefile                ΧΡΗΣΙΜΟΠΟΙΕΙΤΑΙ ΓΙΑ ΑΜΕΣΗ ΜΕΤΑΓΛΩΤΤΙΣΗ ΤΩΝ ΑΡΧΕΙΩΝ
 
 -Η ΜΕΤΑΓΛΩΤΤΙΣΗ ΤΟΥ ΠΡΟΓΡΑΜΜΑΤΟΣ ΓΙΝΕΤΑΙ ΑΜΕΣΑ ΜΕ ΤΗΝ ΧΡΗΣΗ MAKEFILE ΚΑΙ ΤΗΝ ΕΝΤΟΛΗ make
@@ -56,6 +62,7 @@ jobCommander.c
 
 
 functions.c
+
 -void *controller_thread(void *arg)
 Η ΣΥΝΑΡΤΗΣΗ ΑΥΤΗ ΧΡΗΣΙΜΟΠΟΙΕΙΤΑΙ ΓΙΑ ΤΗΝ ΥΛΟΠΟΙΗΣΗ ΤΗΣ ΛΟΓΙΚΗΣ ΤΟΥ CONTROLLER THREAD
 ΣΥΓΚΕΚΡΙΜΕΝΑ ΜΕ ΤΗΝ ΚΛΗΣΗ ΤΗΣ ΔΙΑΒΑΖΕΤΑΙ Η ΕΝΤΟΛΗ ΠΟΥ ΕΔΩΣΕ Ο COMMANDER ΜΕΣΩ ΤΟΥ SOCKET
@@ -78,7 +85,7 @@ functions.c
 ΜΕΤΑ ΤΗΝ ΕΙΣΑΓΩΓΗ ΣΤΕΛΝΕΙ ΤΟ ΚΑΤΑΛΛΗΛΟ ΜΗΝΥΜΑ ΣΤΟ COMMANDER ΜΕΣΩ ΤΟΥ SOCKET
 
 
-void setConcurrency_command(char *args,int clientSocket)
+-void setConcurrency_command(char *args,int clientSocket)
 Η ΣΥΝΑΡΤΗΣΗ ΔΕΧΕΤΑΙ ΤΟ ΝΕΟ ΒΑΘΜΟ ΠΑΡΑΛΛΗΛΙΑΣ ΠΟΥ ΘΕΤΕΙ Ο ΧΡΗΣΤΗΣ ΚΑΘΩΣ ΚΑΙ ΤΟ CLIENTSOCKET ΤΟΥ COMMANDER ΚΑΙ ΕΝΗΜΕΡΩΝΕΙ ΤΗΝ ΑΝΤΙΣΤΟΙΧΗ ΜΕΤΑΒΛΗΤΗ ΤΟΥ ΠΡΟΓΡΑΜΜΑΤΟΣ
 ΣΕ ΠΕΡΙΠΤΩΣΗ ΠΟΥ ΤΕΘΗΚΕ ΜΕΓΑΛΥΤΕΡΟΣ ΒΑΘΜΟΣ ΠΑΡΑΛΛΗΛΙΑΣ ΑΠΟ ΤΟΝ ΠΡΟΗΓΟΥΜΕΝΟ ΓΙΝΕΤΑΙ ΑΝΤΙΣΤΟΙΧΗ ΕΝΗΜΕΡΩΣΗ ΤΩΝ WORKER
 ΤΕΛΟΣ ΑΠΟΣΤΕΛΕΤΑΙ ΤΟ ΜΗΝΥΜΑ ΣΤΟ COMMANDER
@@ -106,6 +113,7 @@ void setConcurrency_command(char *args,int clientSocket)
 
 
 Qimplementation.c
+
 -nodeptr createNode(int, char*,int);
 ΛΑΜΒΑΝΕΙ ΤΙΣ ΑΠΑΡΑΙΤΗΤΕΣ ΠΛΗΡΟΦΟΡΙΕΣ ΓΙΑ ΕΝΑΝ ΚΟΜΒΟ ΚΑΙ ΚΑΝΕΙ ΤΗΝ ΚΑΤΑΛΛΗΛΗ ΔΕΣΜΕΥΣΗ ΧΩΡΟΥ ΕΙΣΑΓΟΝΤΑΣ ΤΙΣ ΠΛΗΡΟΦΟΡΙΕΣ ΕΝΩ ΕΠΙΣΤΡΕΦΕΙ ΔΕΙΚΤΗ ΣΤΟ ΝΕΟ ΚΟΜΒΟ
 
@@ -124,7 +132,7 @@ Qimplementation.c
 ΤΕΛΟΣ ΞΕΚΛΕΙΔΩΝΕΙ ΤΗΝ ΟΥΡΑ ΚΑΙ ΕΝΗΜΕΡΩΝΕΙ ΤΟΥΣ WORKER ΓΙΑ JOB AVAILABILITY
 
 
-nodeptr lock_dequeue(queueptr )
+-nodeptr lock_dequeue(queueptr )
 ΚΑΝΕΙ MUTEX LOCK ΚΑΙ ΓΙΝΕΤΑΙ ΕΛΕΓΧΟΣ ΤΗΣ CONDITION VARIABLE ΓΙΑ ΔΙΑΘΕΣΙΜΗ ΔΟΥΛΕΙΑ ΑΛΛΑ ΚΑΙ ΤΗΣ ΠΕΡΙΠΤΩΣΗΣ ΤΕΡΜΑΤΙΣΜΟΥ ΤΟΥ WORKER ΣΤΗΝ ΟΠΟΙΑ ΕΠΙΣΤΡΕΦΕΙ NULL
 ΣΤΗ ΣΥΝΕΧΕΙ ΕΛΕΓΧΕΤΑΙ ΑΝ Ο ΤΡΕΧΟΝ ΒΑΘΜΟΣ ΠΑΡΑΛΛΗΛΙΑΣ ΕΠΙΤΡΕΠΕΙ ΕΚΤΕΛΕΣΗ ΤΗΣ ΔΟΥΛΕΙΑΣ
 ΤΕΛΟΣ ΓΙΝΕΤΑΙ ΑΦΑΙΡΕΣΗ ΤΗΣ ΑΠΟ ΤΗΝ ΟΥΡΑ, ΓΙΝΕΤΑΙ UNLOCK ΚΑΙ ΕΝΗΜΕΡΩΝΕΤΑΙ ΤΥΧΟΝ COMMANDER ΓΙΑ ΝΕΟ ΧΩΡΟ ΔΙΑΘΕΣΙΜΟ ΣΤΗΝ ΟΥΡΑ
