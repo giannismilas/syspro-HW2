@@ -156,7 +156,6 @@ void poll_command(int clientSocket){                                            
     char response[BUFFER_SIZE];
     write_queue_to_buffer(myqueue, response);                                       //write the queue into a buffer and then write the buffer to the clientSocket for the commander to read
     int n = write(clientSocket, response, strlen(response));
-    printf("%s\n\n\n",response);
     if (n < 0)
         error("ERROR writing to socket");
     close(clientSocket);
