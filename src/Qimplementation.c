@@ -94,7 +94,6 @@ nodeptr lock_dequeue(queueptr q) {                                              
 }
 
 
-
 nodeptr dequeue(queueptr q) {                                                               //remove a job from the front of the queue and modify all qpositions of the rest of the nodes
     if(q->size==q->max_items)
         return NULL;
@@ -104,8 +103,6 @@ nodeptr dequeue(queueptr q) {                                                   
     q->currently_running++;;
     return temp;
 }
-
-
 
 
 void freeQueue(queueptr q) {                                                                //free the whole structure of the queue 
@@ -136,7 +133,6 @@ nodeptr deleteJobID(queueptr q, int jobID) {                                    
     q->size--;
     return current;
 }
-
 
 
 void write_queue_to_buffer(queueptr q, char* buffer) {                                      //write the queue to a buffer to print for poll command
