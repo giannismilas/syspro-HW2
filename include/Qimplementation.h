@@ -7,7 +7,7 @@ typedef struct Q* queueptr;
 struct node{
     int jobid;                      //unique increasing jobid for each job
     char* job;                      //job arguments in a array of strings
-    int clientSocket;
+    int clientSocket;               //clientsocket of the commander that send the job
     nodeptr next;                   //pointer to next node
 };
 
