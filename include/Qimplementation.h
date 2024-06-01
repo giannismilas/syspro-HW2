@@ -5,24 +5,24 @@
 typedef struct node* nodeptr;
 typedef struct Q* queueptr;
 struct node{
-    int jobid;      //unique increasing jobid for each job
-    char* job;     //job arguments in a array of strings
+    int jobid;                      //unique increasing jobid for each job
+    char* job;                      //job arguments in a array of strings
     int clientSocket;
-    nodeptr next;   //pointer to next node
+    nodeptr next;                   //pointer to next node
 };
 
 struct Q{
-    nodeptr front;  //first job of the queue
-    nodeptr rear;   //last job of queue
-    pthread_mutex_t mtx;
-    pthread_cond_t job_available; 
-    pthread_cond_t room_available; 
-    int worker_exit;
-    int max_items;
-    int concurrency;
-    int cur_jobid;
-    int size;
-    int currently_running;       
+    nodeptr front;                  //first job of the queue
+    nodeptr rear;                   //last job of queue
+    pthread_mutex_t mtx;            //mutex to request exclusive access to queue
+    pthread_cond_t job_available;   //condition variable indicating a job is available for dequeue
+    pthread_cond_t room_available;  //condition variable indicating there is space available for enqueue
+    int worker_exit;                //if exit is sent this variable goes to 1 so that workers can exit
+    int max_items;                  //maximum size of the queue
+    int concurrency;                //concurrency
+    int cur_jobid;                  //job id for next enqueue
+    int size;                       //current size of queue
+    int currently_running;          //number of jobs running
 };
 
 
