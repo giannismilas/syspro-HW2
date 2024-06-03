@@ -100,7 +100,6 @@ nodeptr dequeue(queueptr q) {                                                   
     nodeptr temp = q->front;
     q->front = q->front->next;
     q->size--;
-    q->currently_running++;;
     return temp;
 }
 
