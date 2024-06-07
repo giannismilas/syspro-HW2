@@ -74,7 +74,7 @@ int main(int argc, char *argv[]){
     
     pthread_mutex_unlock(&myqueue->mtx);
 
-    for (int i = 0; i < myqueue->currently_running; i++) {              //wait for running workers
+    for (int i = 0; i < threadPoolSize; i++) {              //wait for running workers
         pthread_join(worker_threads[i], NULL);
     }
     close(sockfd);                                          //close and release socket
