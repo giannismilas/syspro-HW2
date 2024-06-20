@@ -1,4 +1,4 @@
-jobExecutorServer 2035 8 5
+./bin/jobExecutorServer 2035 8 5
 
 
-jobCommander linux20.di.uoa.gr 2035 issueJob ls
+./bin/jobCommander linux20.di.uoa.gr 2035 issueJob ls
